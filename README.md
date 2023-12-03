@@ -190,6 +190,31 @@ steps 1.코드 checkout
       3.S3 업로드
       4.EC2 배포
 ```
-### 4.3 Github Action 및 CodeDeploy 상세
+### 4.3 CodeDeploy appspec
+```yaml
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/FIRSTSTEP_BE_AWS
+hooks:
+  BeforeInstall:
+    - location: scripts/before_install.sh
+      runas: root
+  AfterInstall:
+    - location: scripts/after_install.sh
+      runas: root
+    - location: scripts/run_flask.sh
+      runas: ubuntu
+```
+```sh
+# run_flask.sh
+echo ">>> run app ==================="
+python3 -u app.py > /dev/null 2> /home/ubuntu/flask.log </dev/null &
+```
+  -백그라운드로 실행 <br>
+ubuntu 접속이 끊기면 포그라운드로 실행중인 스크립트가 중단되기 때문
+
+### 4.4 Github Action 및 CodeDeploy 상세
 - https://kalswn.tistory.com/entry/AWS-CodeDeploy-Flask
 - https://kalswn.tistory.com/entry/AWS-GitHub-Actions-react
